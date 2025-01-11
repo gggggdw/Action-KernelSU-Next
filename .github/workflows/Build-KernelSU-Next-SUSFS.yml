@@ -42,17 +42,20 @@ jobs:
         run: |
          git config --global user.name "wuua"
          git config --global user.email "3436678798@qq.com"
+         tree /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/kernel_workspace/
 
       - name: Install dependencies
         run: |
          sudo apt update && sudo apt upgrade -y
          sudo apt install -y python3 git curl
+         tree /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/kernel_workspace/
 
       - name: Install repo tool
         run: |
          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/repo
          chmod a+x ~/repo
          sudo mv ~/repo /usr/local/bin/repo
+         tree /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/kernel_workspace/
 
       - name: Initialize repo and sync
         run: |
@@ -63,6 +66,7 @@ jobs:
          rm kernel_platform/msm-kernel/android/abi_gki_protected_exports_* || echo "No protected exports!"
          sed -i 's/ -dirty//g' kernel_platform/common/scripts/setlocalversion
          sed -i 's/ -dirty//g' kernel_platform/msm-kernel/scripts/setlocalversion
+         tree /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/kernel_workspace/
 
       - name: Set up KernelSU Next
         run: |
@@ -72,6 +76,7 @@ jobs:
          KSU_VERSION=$(expr $(/usr/bin/git rev-list --count HEAD) "+" 10200)
          echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
          sed -i "s/DKSU_VERSION=16/DKSU_VERSION=${KSU_VERSION}/" kernel/Makefile
+         tree /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/kernel_workspace/
         
       - name: Set up susfs
         run: |
@@ -121,13 +126,14 @@ jobs:
            echo "CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y" >> ./common/arch/arm64/configs/gki_defconfig
            echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> ./common/arch/arm64/configs/gki_defconfig
            echo "CONFIG_KSU_SUSFS_SUS_SU=y" >> ./common/arch/arm64/configs/gki_defconfig
+           tree /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/kernel_workspace/
 
       - name: Build kernel
         run: |
          cd /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/kernel_workspace
-         rm -rf ./kernel_platform/oplus/build/oplus_setup.sh
-         wget https://raw.githubusercontent.com/gggggdw/android_kernel_modules_and_devicetree_oneplus_sm7675/refs/heads/oneplus/sm7675_v_15.0.0_ace_3v/kernel_platform/oplus/build/oplus_setup.sh -o ./kernel_platform/oplus/build/oplus_setup.sh
+         sed -i 's#vendor/oplus/kernel/prebuilt/vendorsetup.sh#kernel_platform/build/kernel/android/prepare_vendor.sh#g' ./kernel_platform/oplus/build/oplus_build_kernel.sh
          ./kernel_platform/oplus/build/oplus_build_kernel.sh ${{ github.event.inputs.CPUD }} gki
+         tree /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/kernel_workspace/
 
       - name: Make AnyKernel3
         run: |
@@ -136,6 +142,7 @@ jobs:
          cp /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/kernel_workspace/kernel_platform/out/msm-kernel-${{ github.event.inputs.CPUD }}-gki/dist/Image /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/AnyKernel3/
          cp /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/kernel_workspace/kernel_platform/out/msm-kernel-pineapple-gki/dist/Image /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/AnyKernel3/
          cp /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/kernel_workspace/device/qcom/pineapple-kernel/Image /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/AnyKernel3/Image2
+         tree /home/runner/work/Action-KernelSU-Next/Action-KernelSU-Next/kernel_workspace/
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v4
         with:
