@@ -1,0 +1,33 @@
+name: TREE
+on:
+  workflow_dispatch:
+    inputs:
+      CPU:
+        description: "分支"
+        required: true
+        default: 'sm7675'
+      FEIL:
+        description: "配置文件"
+        required: true
+        default: 'oneplus_ace_3v_v'
+      CPUD:
+        description: "处理器代号"
+        required: true
+        default: 'pineapple'
+      ANDROID_VERSION:
+        description: "内核安卓版本"
+        required: true
+        default: 'android14'
+      KERNEL_VERSION:
+        description: "内核版本"
+        required: true
+        default: '6.1'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Tree
+        run: |
+         tree ./
